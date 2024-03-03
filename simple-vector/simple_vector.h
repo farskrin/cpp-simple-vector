@@ -89,7 +89,7 @@ public:
     }
 
     SimpleVector(SimpleVector&& other) noexcept : items_(nullptr) {
-        *this = std::move(other);
+        swap(other);
     }
 
     SimpleVector& operator=(SimpleVector&& other) noexcept {
@@ -142,6 +142,7 @@ public:
     // Если перед вставкой значения вектор был заполнен полностью,
     // вместимость вектора должна увеличиться вдвое, а для вектора вместимостью 0 стать равной 1
     Iterator Insert(ConstIterator pos, const Type& value) {
+        assert(pos >= begin() && pos <= end());
         size_t dist = pos - begin();
         if (capacite_ == 0) {
             ArrayPtr<Type>tmp(1);
@@ -169,6 +170,7 @@ public:
     }
 
     Iterator Insert(ConstIterator pos, Type&& value) {
+        assert(pos >= begin() && pos <= end());
         size_t dist = pos - begin();
         if (capacite_ == 0) {
             ArrayPtr<Type>tmp(1);
@@ -207,6 +209,7 @@ public:
 
     // Удаляет элемент вектора в указанной позиции
     Iterator Erase(ConstIterator pos) {
+        assert(pos >= begin() && pos <= end());
         if (size_ > 0) {
             size_t dist = pos - begin();                                      //insert in end() - 1              
             /*std::copy_backward(std::make_move_iterator(items_.Get() + dist + 1), std::make_move_iterator(items_.Get() + size_),
@@ -253,11 +256,13 @@ public:
 
     // Возвращает ссылку на элемент с индексом index
     Type& operator[](size_t index) noexcept {
+        assert(index < size_);
         return items_[index];
     }
 
     // Возвращает константную ссылку на элемент с индексом index
     const Type& operator[](size_t index) const noexcept {
+        assert(index < size_);
         return items_[index];
     }
 
